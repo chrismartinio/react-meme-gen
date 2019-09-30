@@ -1,26 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import MemeForm from './MemeForm';
+import Meme from './Meme';
+import { connect } from 'react-redux';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.newMeme = this.newMeme.bind(this);
+    this.removeMeme = this.removeMeme.bind(this);
+  }
+
+  newMeme(data) {
+    this.props.dispatch({ type: "MEME", payload: data })
+  }
+
+  removeMeme(key) {
+    this.props.dispatch({ type: "REMOVE_MEME", payload: key })
+  }
+
+  render() {
+    return (
+      <div>
+        <MemeForm newMeme={this.newMeme} />
+        <div className="memes-container">
+          {this.props.meme.map(meme => <Meme removeMeme={this.removeMeme} meme={meme} key={meme.id} />)}
+        </div>
+      </div>
+    );
+  }
 }
 
-export default App;
+function anotherFn(state) {
+  return { meme: state.meme }
+}
+
+export default connect(anotherFn)(App);
